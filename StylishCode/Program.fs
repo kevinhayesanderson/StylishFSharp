@@ -75,23 +75,29 @@ let tryHub (billingDetails : BillingDetails) =
         |> Option.bind tryPostalCode
         |> Option.map postalCodeHub
 
+let countNonNullBillingAddresses (orders : seq<BillingDetails>) =
+    orders
+        |> Seq.map (fun bd -> bd.Billing)
+        |> Seq.map Option.ofObj
+        |> Seq.sumBy Option.count
+
 [<EntryPoint>]
 let main _ =
 
     // let milesYards = 1.1 |> MilesYards.fromMilesPointYards |> MilesYards.toDecimalMiles 
     // printfn "%A" milesYards
 
-    myOrder |> tryHub |> ignore
+    //myOrder |> tryHub |> ignore
 
-    hisOrder |> tryHub |> ignore
-
-    let orders = [| myOrder; hisOrder; herOrder |]
+    let orders = [| myOrder; hisOrder; herOrder; yourOrder; theirOrder |]
 
     orders |> deliveryLabels |> ignore
     
     orders 
         |> collectionsFor 1
         |> Seq.iter (printfn "%A")
+
+    orders |> countNonNullBillingAddresses |> printfn "%A"
 
     let _key = System.Console.ReadKey()
     0
