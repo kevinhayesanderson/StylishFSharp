@@ -4,6 +4,7 @@ type Delivery =
     | AsBilling
     | Physical of string
     | Download
+    | ClickAndCollect of int
 
 type BillingDetails = {
     Name : string
@@ -25,11 +26,29 @@ let herOrder = {
     Billing = "9 Gravity Road\nErewhon\n80665"
     Delivery = Download } 
 
+let yourOrder = {
+    Name = "Alison Chan"
+    Billing = "885 Electric Avenue\nErewhon\n41878"
+    Delivery = ClickAndCollect 1 }
+
+let theirOrder = {
+    Name = "Pana Okpik"
+    Billing = "299 Relativity Drive\nErewhon\79245"
+    Delivery = ClickAndCollect 2 }
+
+let collectionsFor (storeId : int) (billingDetails : BillingDetails seq) =
+    billingDetails
+        |> Seq.choose (fun d ->
+            match d.Delivery with
+                | ClickAndCollect s when s = storeId -> Some d
+                | _ -> None)
+
 let tryDeliveryLabel (billingDetails : BillingDetails) =
     match billingDetails.Delivery with
         | AsBilling -> billingDetails.Billing |> Some
         | Physical address -> address |> Some
         | Download -> None
+        | ClickAndCollect _ -> None
         |> Option.map (fun address -> sprintf "%s\n%s" billingDetails.Name address)
 
 let deliveryLabels (billingDetails : BillingDetails seq) =
@@ -69,6 +88,10 @@ let main _ =
     let orders = [| myOrder; hisOrder; herOrder |]
 
     orders |> deliveryLabels |> ignore
+    
+    orders 
+        |> collectionsFor 1
+        |> Seq.iter (printfn "%A")
 
     let _key = System.Console.ReadKey()
     0
