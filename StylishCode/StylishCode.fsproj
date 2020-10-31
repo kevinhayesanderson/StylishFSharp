@@ -1,9 +1,11 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp3.1</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Houses.fs" />
+    <Compile Include="Order.fs" />
     <Compile Include="MilesChains.fs" />
     <Compile Include="MilesYards.fs" />
     <Compile Include="Program.fs" />
